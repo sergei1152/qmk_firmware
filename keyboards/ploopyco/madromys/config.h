@@ -31,10 +31,10 @@
 #define SPI_MISO_PIN GP0
 #define SPI_MOSI_PIN GP7
 
-#define PLOOPY_DPI_OPTIONS { 1200, 2000 }
+#define PLOOPY_DPI_OPTIONS { 1200, 1800 }
 #define PLOOPY_DPI_DEFAULT 1
 
-#define PLOOPY_COMBO_SCROLL 1 // this setting overrides the momentary
+#define PLOOPY_COMBO_SCROLL 0 // this setting overrides the momentary
 #define PLOOPY_DRAGSCROLL_MOMENTARY 1
 #define PLOOPY_DRAGSCROLL_DIVISOR_H 64
 #define PLOOPY_DRAGSCROLL_DIVISOR_V 64
