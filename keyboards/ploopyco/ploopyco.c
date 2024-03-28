@@ -57,6 +57,9 @@
 #ifndef ENCODER_BUTTON_COL
 #    define ENCODER_BUTTON_COL 0
 #endif
+#ifndef PLOOPY_COMBO_SCROLL
+#    define PLOOPY_COMBO_SCROLL 0
+#endif
 
 keyboard_config_t keyboard_config;
 uint16_t          dpi_array[] = PLOOPY_DPI_OPTIONS;
@@ -157,6 +160,10 @@ report_mouse_t pointing_device_task_kb(report_mouse_t mouse_report) {
 }
 
 bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
+    #if PLOOPY_COMBO_SCROLL
+    static uint16_t timer;
+    #endif
+   
     if (debug_mouse) {
         dprintf("KL: kc: %u, col: %u, row: %u, pressed: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed);
     }
@@ -179,8 +186,17 @@ bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
         pointing_device_set_cpi(dpi_array[keyboard_config.dpi_config]);
     }
 
-    if (keycode == DRAG_SCROLL) {
-#ifdef PLOOPY_DRAGSCROLL_MOMENTARY
+     if (keycode == DRAG_SCROLL) {
+#if PLOOPY_COMBO_SCROLL
+        if (record->event.pressed) {
+            timer = timer_read();
+            is_drag_scroll ^= 1;
+        } else {
+            if (timer_elapsed(timer) > 200) {
+                is_drag_scroll = 0;
+            }
+        }
+#elif PLOOPY_DRAGSCROLL_MOMENTARY
         is_drag_scroll = record->event.pressed;
 #else
         if (record->event.pressed) {
