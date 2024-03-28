@@ -136,22 +136,23 @@ report_mouse_t pointing_device_task_kb(report_mouse_t mouse_report) {
         scroll_accumulated_h += (float)mouse_report.x / PLOOPY_DRAGSCROLL_DIVISOR_H;
         scroll_accumulated_v += (float)mouse_report.y / PLOOPY_DRAGSCROLL_DIVISOR_V;
 
-        // Assign integer parts of accumulated scroll values to the mouse report
-        mouse_report.h = (int8_t)scroll_accumulated_h;
-#ifdef PLOOPY_DRAGSCROLL_INVERT
-        mouse_report.v = -(int8_t)scroll_accumulated_v;
-#else
-        mouse_report.v = (int8_t)scroll_accumulated_v;
-#endif
-
+         uprintf("before ih:%d iv:%d ah:%f av%f\n", mouse_report.x, mouse_report.y, scroll_accumulated_h, scroll_accumulated_v);       
         // Update accumulated scroll values by subtracting the integer parts
-        scroll_accumulated_h -= (int8_t)scroll_accumulated_h;
-        scroll_accumulated_v -= (int8_t)scroll_accumulated_v;
+       // if (scroll_accumulated_v) {
+#ifdef PLOOPY_DRAGSCROLL_INVERT
+            mouse_report.v = -(int8_t)scroll_accumulated_v;
+#else
+            mouse_report.v = (int8_t)scroll_accumulated_v;
+#endif
+            scroll_accumulated_v -= (int8_t)scroll_accumulated_v;
+        //} else if (scroll_accumulated_h) {
+            // Assign integer parts of accumulated scroll values to the mouse report
+            mouse_report.h = (int8_t)scroll_accumulated_h;
+            scroll_accumulated_h -= (int8_t)scroll_accumulated_h;
+        //}
 
+         uprintf("after oh:%d ov:%d ah:%f av%f\n", mouse_report.x, mouse_report.y, scroll_accumulated_h, scroll_accumulated_v);       
         // Clear the X and Y values of the mouse report
-        mouse_report.x = 0;
-        mouse_report.y = 0;
-
         mouse_report.x = 0;
         mouse_report.y = 0;
     }
@@ -212,7 +213,7 @@ bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
 void keyboard_pre_init_kb(void) {
     // debug_enable  = true;
     // debug_matrix  = true;
-    // debug_mouse   = true;
+    //debug_mouse   = true;
     // debug_encoder = true;
 
     /* Ground all output pins connected to ground. This provides additional
