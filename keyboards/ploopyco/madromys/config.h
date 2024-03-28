@@ -27,3 +27,7 @@
 #define SPI_SCK_PIN GP2
 #define SPI_MISO_PIN GP0
 #define SPI_MOSI_PIN GP7
+
+// Custom settings for drag scroll
+#define PLOOPY_DRAGSCROLL_SEMAPHORE 4
+#define PLOOPY_DRAGSCROLL_MOMENTARY 0
