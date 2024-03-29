@@ -61,6 +61,7 @@
 #    define PLOOPY_COMBO_SCROLL 0
 #endif
 
+
 keyboard_config_t keyboard_config;
 uint16_t          dpi_array[] = PLOOPY_DPI_OPTIONS;
 #define DPI_OPTION_SIZE ARRAY_SIZE(dpi_array)
@@ -136,22 +137,20 @@ report_mouse_t pointing_device_task_kb(report_mouse_t mouse_report) {
         scroll_accumulated_h += (float)mouse_report.x / PLOOPY_DRAGSCROLL_DIVISOR_H;
         scroll_accumulated_v += (float)mouse_report.y / PLOOPY_DRAGSCROLL_DIVISOR_V;
 
-         uprintf("before ih:%d iv:%d ah:%f av%f\n", mouse_report.x, mouse_report.y, scroll_accumulated_h, scroll_accumulated_v);       
         // Update accumulated scroll values by subtracting the integer parts
-       // if (scroll_accumulated_v) {
 #ifdef PLOOPY_DRAGSCROLL_INVERT
-            mouse_report.v = -(int8_t)scroll_accumulated_v;
+        mouse_report.v = -(int8_t)scroll_accumulated_v;
 #else
-            mouse_report.v = (int8_t)scroll_accumulated_v;
+        mouse_report.v = (int8_t)scroll_accumulated_v;
 #endif
-            scroll_accumulated_v -= (int8_t)scroll_accumulated_v;
-        //} else if (scroll_accumulated_h) {
-            // Assign integer parts of accumulated scroll values to the mouse report
-            mouse_report.h = (int8_t)scroll_accumulated_h;
-            scroll_accumulated_h -= (int8_t)scroll_accumulated_h;
-        //}
+        scroll_accumulated_v -= (int8_t)scroll_accumulated_v;
+#ifdef PLOOPY_DRAGSCROLL_INVERT_X
+        mouse_report.h -= (int8_t)scroll_accumulated_h;
+#else
+        mouse_report.h = (int8_t)scroll_accumulated_h;
+#endif
+        scroll_accumulated_h -= (int8_t)scroll_accumulated_h;
 
-         uprintf("after oh:%d ov:%d ah:%f av%f\n", mouse_report.x, mouse_report.y, scroll_accumulated_h, scroll_accumulated_v);       
         // Clear the X and Y values of the mouse report
         mouse_report.x = 0;
         mouse_report.y = 0;
@@ -203,6 +202,15 @@ bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
         if (record->event.pressed) {
             is_drag_scroll ^= 1;
         }
+#endif
+
+#ifdef PLOOPY_DRAGSCROLL_DPI
+    if (record->event.pressed) {
+        pointing_device_set_cpi(PLOOPY_DRAGSCROLL_DPI);
+    } else {
+        // restore CPI
+        pointing_device_set_cpi(dpi_array[keyboard_config.dpi_config]);
+    }
 #endif
     }
 

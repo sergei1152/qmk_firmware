@@ -36,6 +36,10 @@
 
 #define PLOOPY_COMBO_SCROLL 0 // this setting overrides the momentary
 #define PLOOPY_DRAGSCROLL_MOMENTARY 1
-#define PLOOPY_DRAGSCROLL_DIVISOR_H 64
-#define PLOOPY_DRAGSCROLL_DIVISOR_V 64
 #define PLOOPY_DRAGSCROLL_INVERT 0
+#define PLOOPY_DRAGSCROLL_INVERT_X 1
+
+// this setting overrideds the drag scroll divisors. Instead this is a fixed dpi for all drag scrolling
+#define PLOOPY_DRAGSCROLL_DPI 100
+#define PLOOPY_DRAGSCROLL_DIVISOR_H 8
+#define PLOOPY_DRAGSCROLL_DIVISOR_V 8
